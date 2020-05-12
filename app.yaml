@@ -1,0 +1,32 @@
+application: gae-project-libreria
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: yes
+
+handlers:
+- url: /favicon\.ico
+  static_files: favicon.ico
+  upload: favicon\.ico
+
+- url: /
+  script: handlers.main.app
+
+- url: /libros
+  script: handlers.libros.listar.app
+
+- url: /libros/crear
+  script: handlers.libros.crear.app
+
+- url: /libros/eliminar
+  script: handlers.libros.eliminar.app
+
+- url: /likes/crear
+  script: handlers.likes.crear.app
+
+libraries:
+- name: webapp2
+  version: "2.5.2"
+
+- name: jinja2
+  version: "latest"

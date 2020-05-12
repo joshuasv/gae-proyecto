@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <style>
+        body { 
+            padding-top: 65px; 
+        }
+    </style>
+    <script>
+    function check()
+    {
+        const edTitulo = document.getElementById("edTitulo")
+        const edAutor = document.getElementById("edAutor")
+        const edFechaPub = document.getElementById("edFechaPub")
+
+        return (edTitulo.value.trim().length > 0 &&
+            edAutor.value.trim().length > 0 &&
+            edFechaPub.value.trim().length > 0)
+    }
+    </script>
+
+    <h1>Crear nuevo libro</h1>
+    <form id="formCrearLibro" 
+        method="post" 
+        action="/libros/crear?id={{usuario.key.urlsafe()}}" 
+        onsubmit="return check()">
+        
+        <p>
+            <label for="edTitulo">Título</label>
+            <input type="text" id="edTitulo" name="edTitulo" maxlength="100">
+        </p>
+
+        <p>
+            <label for="edAutor">Autor</label>
+            <input type="text" id="edAutor" name="edAutor" maxlength="100">
+        </p>
+
+        <p>
+            <label for="edFechaPub">Fecha de publicación</label>
+            <input type="date" id="edFechaPub" name="edFechaPub">
+        </p>
+        
+        <p><input type="submit" value="Crear"></p>
+
+    </form>
+{% endblock %}

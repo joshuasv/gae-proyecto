@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% if message %}
+  <div class="alert alert-dark" role="alert">
+    {{message}}
+  </div>
+{% endif %}
+
+{% block jumbotron %}
+<div class="jumbotron">
+  <div class="container">
+    <h1 class="display-3">¡Bienvenido a mi biblioteca!</h1>
+    <p>En esta biblioteca podrás encontrar una gran variedad de títulos.</p>
+    {% if usuario %}
+      <p><a class="btn btn-primary btn-lg" href="/libros/crear?id={{usuario.key.urlsafe()}}" role="button">Añade un libro</a></p>
+    {% else %}
+      <div class="dropdown">
+        <button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          ¡Accede!
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          {% for usuario in usuarios %}
+            <a class="dropdown-item" href="/?id={{usuario.key.urlsafe()}}">{{usuario.email}}</a>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+      <div class="col">
+        <h1>Listado de todos los libros</h1>
+      </div>
+      {% if usuario %}
+        <div class="col">
+        <!-- Small modal -->
+        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target=".bd-example-modal-lg">Mis libros</button>
+
+        <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <h2>Listado de todos mis libros</h2>
+              {% if mis_libros.count() > 0 %}
+                {% for libro in mis_libros %}
+                  <p>
+                  <b>{{ libro.titulo }}</b> {{libro.autor}}
+                    <a href="/libros/eliminar?id={{libro.key.urlsafe()}}">[ELIMINAR]</a>
+                  <p>
+                {% endfor %}
+              {% else %}
+                <p>Todavía añadiste ningún libro.</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+  </div>
+
+
+
+  <div class="container">
+    {% if libros.count() > 0 %}
+      {% for libro in libros %}
+        <p>
+          {% if likes %}
+            ({{likes[libro.key]}})
+          {% endif %}
+          <b>{{ libro.titulo }}</b> {{libro.autor}}
+
+          {% if usuario %}
+            <a href="/likes/crear?id_usuario={{usuario.key.urlsafe()}}&id_libro={{libro.key.urlsafe()}}">[LIKE]</a>
+            
+            <!-- Small modal -->
+            <a href="#" data-toggle="modal" data-target="#myModal{{loop.index}}">[VER LIKES]</a>
+
+            <div id="myModal{{loop.index}}" class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                  <h2>Usuarios que dejaron su like en {{libro.titulo}}</h2>
+                  {% if likes_usuarios %}
+                    {%for user in likes_usuarios[libro.key]%}
+                      <p>{{user.get().nombre}} - {{user.get().email}}</p>
+                    {%endfor%}
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          {% endif %}
+        </p>
+      {% endfor %}
+    {% else %}
+      <p>Todavía no hay ningún libro.</p>
+    {% endif %}
+  </div>
+{% endblock %}
